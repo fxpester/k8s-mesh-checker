@@ -82,15 +82,15 @@ do
 
  for kubehost in $kubehosts
  do
- echo "checking pod - $kubehost connection to $host"
- kubectl exec $kubehost -- echo dummy-payload  > /dev/tcp/$host/$1 || failures="$failures pod - $kubehost cant connect to $host"
+ echo "checking pod - $kubehost connection to ${host}:${1}"
+ kubectl exec $kubehost -- timeout 2 echo dummy-payload  > /dev/tcp/$host/$1 || failures="$failures \n pod - $kubehost cant connect to $host"
  done
 
 done
 
 
 
-echo "failed hosts: $failures"
+echo -e "failed hosts: $failures"
 
 
 
