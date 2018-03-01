@@ -91,7 +91,7 @@ do
  for ip in $ips
  do
  echo "checking pod - $pod connection to host ${ip}:${1}"
- kubectl exec $pod -- echo dummy-payload | nc -i 2 -4 -n --send-only $ip $1 || failures="$failures \n pod - $pod cant connect to host at $ip:${1}"
+ kubectl exec $pod -- nc -i 2 -4 -n $ip $1 || failures="$failures \n pod - $pod cant connect to host at $ip:${1}"
  done
 
 
@@ -99,7 +99,7 @@ do
  for svc in $svcs
  do
  echo "checking pod - $pod connection to svc ${svc}:${1}" 
- kubectl exec $pod -- echo dummy-payload | nc -i 2 -4 -n --send-only $svc $1 || failures="$failures \n pod - $pod cant connect to svc at $svc:${1}"
+ kubectl exec $pod -- nc -i 2 -4 -n $svc $1 || failures="$failures \n pod - $pod cant connect to svc at $svc:${1}"
  done
 
 done
