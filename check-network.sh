@@ -32,9 +32,9 @@ spec:
 
 EOF3
 	
+sleep 10	
 	
-	
-
+kubectl get pod -o wide | grep echoserver | awk '{print $1}' | xargs -I % -n 1 kubectl expose pod %  --port $1
 
 
 
@@ -69,21 +69,34 @@ EOF2
 
 
 
+
 sleep 120 
 
 
 export failures=''
+
 hosts=$(kubectl get pod -o wide | grep echoserver | awk '{print $6}')
 kubehosts=$(kubectl get pod -o wide | grep echoserver | awk '{print $1}')
-
+svcs=$(kubectl get svc -o wide | grep echoserver  | awk '{print $3}')
 
 for host in $hosts
 do
 
+
  for kubehost in $kubehosts
  do
- echo "checking pod - $kubehost connection to ${host}:${1}"
- kubectl exec $kubehost -- timeout 2 echo dummy-payload  > /dev/tcp/$host/$1 || failures="$failures \n pod - $kubehost cant connect to $host"
+ echo "checking pod - $kubehost connection to host ${host}:${1}"
+ kubectl exec $kubehost -- timeout 2 echo dummy-payload  > /dev/tcp/$host/$1 || failures="$failures \n pod - $kubehost cant connect to host $host:${1}"
+
+
+  for svc in $svcs  
+  do
+  echo "checking pod - $kubehost connection to svc ${svc}:${1}" 
+  kubectl exec $kubehost -- timeout 2 echo dummy-payload  > /dev/tcp/$svc/$1 || failures="$failures \n pod - $kubehost cant connect to svc at $svc:${1}"
+    
+
+  done
+
  done
 
 done
@@ -94,9 +107,9 @@ echo -e "failed hosts: $failures"
 
 
 
-
 kubectl delete ds echoserver-hostnetwork
 kubectl delete ds echoserver
+kubectl get svc -o wide |  grep echoserver | awk '{print $1}' | xargs kubectl delete svc
 
 
 
