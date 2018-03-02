@@ -11,12 +11,12 @@ cat <<EOF3 | kubectl create -f -
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: echoserver
+  name: k8s-mesh-checker
 spec:
   template:
     metadata:
       labels:
-        name: echoserver
+        name: k8s-mesh-checker
     spec:
       tolerations:
         - key: "node-role.kubernetes.io/master"
@@ -27,14 +27,13 @@ spec:
           name: centos
           command: ["/bin/sh"]
           args: ["-c", "python -m SimpleHTTPServer $1"]
-          imagePullPolicy: Always
 
 
 EOF3
 	
 sleep 10	
 	
-kubectl get pod -o wide | grep echoserver | awk '{print $1}' | xargs -I % -n 1 kubectl expose pod %  --port $1
+kubectl get pod -o wide | grep k8s-mesh-checker | awk '{print $1}' | xargs -I % -n 1 kubectl expose pod %  --port $1
 
 
 if [ "$2" == "yes" ] ; 
@@ -44,12 +43,12 @@ cat <<EOF2 | kubectl create -f -
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: echoserver-hostnetwork
+  name: k8s-mesh-checker-hostnetwork
 spec:
   template:
     metadata:
       labels:
-        name: echoserver-hostnetwork
+        name: k8s-mesh-checker-hostnetwork
     spec:
       tolerations:
         - key: "node-role.kubernetes.io/master"
@@ -61,7 +60,6 @@ spec:
           name: centos
           command: ["/bin/sh"]
           args: ["-c", "python -m SimpleHTTPServer $1"]
-          imagePullPolicy: Always
           securityContext:
             privileged: true
 
@@ -79,9 +77,9 @@ sleep 120
 
 export failures=''
 
-ips=$(kubectl get pod -o wide | grep echoserver | awk '{print $6}')
-pods=$(kubectl get pod -o wide | grep echoserver | awk '{print $1}')
-svcs=$(kubectl get svc -o wide | grep echoserver  | awk '{print $3}')
+ips=$(kubectl get pod -o wide | grep k8s-mesh-checker | awk '{print $6}')
+pods=$(kubectl get pod -o wide | grep k8s-mesh-checker | awk '{print $1}')
+svcs=$(kubectl get svc -o wide | grep k8s-mesh-checker  | awk '{print $3}')
 
 for pod in $pods
 
@@ -112,11 +110,11 @@ echo -e "failed hosts: $failures"
 
 if [ "$2" == "yes" ] ;
 then
-kubectl delete ds echoserver-hostnetwork
+kubectl delete ds k8s-mesh-checker-hostnetwork
 fi
 
-kubectl delete ds echoserver
-kubectl get svc -o wide |  grep echoserver | awk '{print $1}' | xargs kubectl delete svc
+kubectl delete ds k8s-mesh-checker
+kubectl get svc -o wide |  grep k8s-mesh-checker | awk '{print $1}' | xargs kubectl delete svc
 
 
 
