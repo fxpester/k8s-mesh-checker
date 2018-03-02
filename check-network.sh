@@ -26,7 +26,7 @@ spec:
         - image: centos
           name: centos
           command: ["/bin/sh"]
-          args: ["-c", "yum install nmap-ncat-6.40-7.el7.x86_64 -y && nc -l -k -n -p $1"]
+          args: ["-c", "python -m SimpleHTTPServer $1"]
           imagePullPolicy: Always
 
 
@@ -60,7 +60,7 @@ spec:
         - image: centos
           name: centos
           command: ["/bin/sh"]
-          args: ["-c", "yum install nmap-ncat-6.40-7.el7.x86_64 -y && nc -l -k -n -p $1"]
+          args: ["-c", "python -m SimpleHTTPServer $1"]
           imagePullPolicy: Always
           securityContext:
             privileged: true
@@ -91,7 +91,7 @@ do
  for ip in $ips
  do
  echo "checking pod - $pod connection to host ${ip}:${1}"
- kubectl exec $pod -- nc -i 2 -4 -n $ip $1 || failures="$failures \n pod - $pod cant connect to host at $ip:${1}"
+ kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1}"
  done
 
 
@@ -99,7 +99,7 @@ do
  for svc in $svcs
  do
  echo "checking pod - $pod connection to svc ${svc}:${1}" 
- kubectl exec $pod -- nc -i 2 -4 -n $svc $1 || failures="$failures \n pod - $pod cant connect to svc at $svc:${1}"
+ kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1}"
  done
 
 done
