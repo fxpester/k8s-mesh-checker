@@ -89,7 +89,8 @@ do
  for ip in $ips
  do
  echo "checking pod - $pod connection to pod on ${ip}:${1}"
- kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to pod at $ip:${1}"
+ node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
+ kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1} running on node $node"
  done
 
 
@@ -97,7 +98,8 @@ do
  for svc in $svcs
  do
  echo "checking pod - $pod connection to svc on ${svc}:${1}" 
- kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1}"
+ node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
+ kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1} running on node $node"
  done
 
 done
