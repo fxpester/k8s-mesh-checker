@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ $# != 2 ]; then
-        echo "Usage: $0 port check-hostnetwork(yes|no)  ## checks port for fullmesh connectivity in k8s cluster"
+if [ $# != 3 ]; then
+        echo "Usage: $0 port check-hostnetwork(yes|no) send-results-to-telegram(yes|no)  ## checks port for fullmesh connectivity in k8s cluster, telegram token and chatid should be declared as vars TELEGRAM_TOKEN and TELEGRAM_CHAT"
         exit
 fi
 
@@ -108,6 +108,12 @@ done
 
 
 echo -e "failed hosts: $failures"
+
+
+if [ "$3" == "yes" ] ;
+then
+echo -e "$failures" | ./telegram.sh -
+fi
 
 
 if [ "$2" == "yes" ] ;
