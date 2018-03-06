@@ -66,13 +66,14 @@ spec:
 
 EOF2
 
+sleep 30 
 
 fi
 
 
 
 
-sleep 120 
+
 
 
 export failures=''
