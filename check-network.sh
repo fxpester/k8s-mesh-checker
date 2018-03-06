@@ -113,7 +113,11 @@ echo -e "failed hosts: $failures"
 
 if [ "$3" == "yes" ] ;
 then
-echo -e "$failures" | ./telegram.sh -
+ if [ "${#failures}" -gt "3000" ];
+ then
+ echo -e "data was truncated to 3000 chars" | ./telegram.sh -
+ fi
+echo -e "${failures:0:3000}" | ./telegram.sh -
 fi
 
 
