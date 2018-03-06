@@ -23,10 +23,10 @@ spec:
           operator: "Exists"
           effect: "NoSchedule" 
       containers:
-        - image: centos
-          name: centos
+        - image: alpine
+          name: alpine
           command: ["/bin/sh"]
-          args: ["-c", "python -m SimpleHTTPServer $1"]
+          args: ["-c", "apk update && apk add python && python -m SimpleHTTPServer $1"]
 
 
 EOF3
@@ -56,10 +56,10 @@ spec:
           effect: "NoSchedule" 
       hostNetwork: true
       containers:
-        - image: centos
-          name: centos
+        - image: alpine
+          name: alpine
           command: ["/bin/sh"]
-          args: ["-c", "python -m SimpleHTTPServer $1"]
+          args: ["-c", "apk update && apk add python && python -m SimpleHTTPServer $1"]
           securityContext:
             privileged: true
 
