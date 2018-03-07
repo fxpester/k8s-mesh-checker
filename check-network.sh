@@ -31,7 +31,7 @@ spec:
 
 EOF3
 	
-sleep 10	
+sleep 30	
 	
 kubectl get pod -o wide | grep k8s-mesh-checker | awk '{print $1}' | xargs -I % -n 1 kubectl expose pod %  --port $1
 
