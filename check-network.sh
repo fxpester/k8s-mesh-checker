@@ -104,7 +104,7 @@ do
  done
  
  pod-node=$(kubectl get pod -o wide | grep $pod | awk '{print $7}')
- kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null https://api.telegram.org/ || failures="$failures \n pod - $pod running on $pod-node cant connect to telegram"    
+ kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null https://api.telegram.org/ || failures="$failures \n pod - $pod running on ${pod-node} cant connect to telegram"    
 
 done
 
