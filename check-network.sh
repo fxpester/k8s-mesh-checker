@@ -5,7 +5,7 @@ if [ $# != 3 ]; then
         exit
 fi
 
-
+starttime=$(date)
 
 cat <<EOF3 | kubectl create -f -
 apiVersion: extensions/v1beta1
@@ -91,7 +91,7 @@ do
  do
  echo "checking pod - $pod connection to pod on ${ip}:${1}"
  node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
- kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1} running on node $node"
+ kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1} running on node $node"
  done
 
 
@@ -100,7 +100,7 @@ do
  do
  echo "checking pod - $pod connection to svc on ${svc}:${1}" 
  node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
- kubectl exec $pod -- curl --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1} running on node $node"
+ kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1} running on node $node"
  done
 
 done
@@ -109,7 +109,7 @@ done
 
 
 echo -e "failed hosts: $failures"
-
+echo starttime is $starttime - endtime is $(date)
 
 if [ "$3" == "yes" ] ;
 then
