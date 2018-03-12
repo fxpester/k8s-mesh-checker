@@ -91,7 +91,7 @@ do
  do
  
  node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
- kubectl exec $pod -- curl  -w "%{time_total}" --retry 2 --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1} running on node $node"
+ kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null ${ip}:${1} || failures="$failures \n pod - $pod cant connect to host at $ip:${1} running on node $node"
  echo "checking pod - $pod connection to pod on ${ip}:${1} it took $(kubectl exec $pod -- curl  -w "%{time_total}" --retry 2 --connect-timeout 2 -f -s -o /dev/null ${ip}:${1}/test.data)" 
  done
 
@@ -101,7 +101,7 @@ do
  do
  
  node=$(kubectl get pod -o wide | grep $ip | awk '{print $7}')
- kubectl exec $pod -- curl  -w "%{time_total}" --retry 2 --connect-timeout 2 -f -s -o /dev/null ${svc}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1} running on node $node"
+ kubectl exec $pod -- curl --retry 2 --connect-timeout 2 -f -s -o /dev/null ${svc}:${1} || failures="$failures \n pod - $pod cant connect to svc at $svc:${1} running on node $node"
  echo "checking pod - $pod connection to svc on ${svc}:${1} it took $(kubectl exec $pod -- curl  -w "%{time_total}" --retry 2 --connect-timeout 2 -f -s -o /dev/null ${svc}:${1}/test.data)" 
  done
  
