@@ -26,7 +26,7 @@ spec:
         - image: alpine
           name: alpine
           command: ["/bin/sh"]
-          args: ["-c", "apk update && apk add python curl && python -m SimpleHTTPServer $1"]
+          args: ["-c", "apk update && apk add python curl && dd if=/dev/urandom of=/test.data bs=1024 count=1000000 && python -m SimpleHTTPServer $1"]
 
 
 EOF3
@@ -59,7 +59,7 @@ spec:
         - image: alpine
           name: alpine
           command: ["/bin/sh"]
-          args: ["-c", "apk update && apk add python curl && python -m SimpleHTTPServer $1"]
+          args: ["-c", "apk update && apk add python curl && dd if=/dev/urandom of=/test.data bs=1024 count=1000000 && python -m SimpleHTTPServer $1"]
           securityContext:
             privileged: true
 
