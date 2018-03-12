@@ -66,11 +66,11 @@ spec:
 
 EOF2
 
-sleep 30 
+
 
 fi
 
-
+sleep 30 
 
 
 
@@ -110,10 +110,6 @@ done
 
 
 
-
-echo -e "failed hosts: $failures"
-echo starttime is $starttime - endtime is $(date)
-
 if [ "$3" == "yes" ] ;
 then
  if [ "${#failures}" -gt "3000" ];
@@ -132,5 +128,7 @@ fi
 kubectl delete ds k8s-mesh-checker
 kubectl get svc -o wide |  grep k8s-mesh-checker | awk '{print $1}' | xargs kubectl delete svc
 
+sleep 60 
 
-
+echo -e "failed hosts: $failures"
+echo starttime is $starttime - endtime is $(date)
